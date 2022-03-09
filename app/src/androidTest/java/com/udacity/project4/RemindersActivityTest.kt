@@ -112,8 +112,6 @@ class RemindersActivityTest :
 
         onView(withId(R.id.map)).perform(longClick())
 
-        Thread.sleep(2500) // wait for the snackbar msg to go away
-
         onView(withId(R.id.btn_select_location)).perform(click())
 
         onView(withId(R.id.reminderTitle)).perform(replaceText(title))
@@ -129,6 +127,37 @@ class RemindersActivityTest :
         }
         onView(withText(title)).check(matches(isDisplayed()))
         onView(withText(description)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addReminder_noTitle_showSnackBar() = runBlocking {
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.addReminderFAB)).perform(click())
+
+        onView(withId(R.id.saveReminder)).perform(click())
+
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+            .check(matches(withText(R.string.err_enter_title)))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addReminder_noLocation_showSnackBar() = runBlocking {
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.addReminderFAB)).perform(click())
+
+        onView(withId(R.id.reminderTitle)).perform(replaceText("Test"))
+        onView(withId(R.id.saveReminder)).perform(click())
+
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+            .check(matches(withText(R.string.err_select_location)))
 
         activityScenario.close()
     }

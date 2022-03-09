@@ -21,14 +21,13 @@ class MyApp : Application() {
          * use Koin Library as a service locator
          */
         val myModule = module {
-
             //Declare singleton definitions to be later injected using by inject()
             single { LocalDB.createRemindersDao(get()) }
             single<ReminderDataSource> { RemindersLocalRepository(get()) }
-            single { SaveReminderViewModel(get(), get()) }
 
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel { RemindersListViewModel(get(), get()) }
+            viewModel { SaveReminderViewModel(get(), get()) }
         }
 
         startKoin {

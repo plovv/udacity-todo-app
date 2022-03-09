@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 
 class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource): BaseViewModel(app) {
 
-    val reminderGeofenceAdded = MutableLiveData<ReminderDataItem?>()
     val reminderTitle = MutableLiveData<String?>()
     val reminderDescription = MutableLiveData<String?>()
     val reminderSelectedLocationStr = MutableLiveData<String?>()
@@ -27,7 +26,6 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
      * Clear the live data objects to start fresh next time the view model gets called
      */
     fun onClear() {
-        reminderGeofenceAdded.value = null
         reminderTitle.value = null
         reminderDescription.value = null
         reminderSelectedLocationStr.value = null
@@ -96,7 +94,11 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     }
 
     fun onMapLoaded() {
-        showSnackBar.value = "Please select a location for the reminder."
+        showToast.value = "Please select a location for the reminder."
+
+        if (latitude.value == null && longitude.value == null) {
+            saveBtnVisible.value = false
+        }
     }
 
     fun setSelectedLocation(poi: PointOfInterest?, latitude: Double?, longitude: Double?) {
